@@ -1,27 +1,22 @@
 import 'reflect-metadata';
 import { ApplicationFactory } from './core/application.factory';
-import { PrismaService } from './features/prisma.service';
-import { ZodValidation } from './middleware/zod.middleware';
 import { ExceptionHandler } from './middleware/exception.middleware';
-import { JwtService } from './features/jwt/jwt.service';
-import { AuthMiddleware } from './features/auth/auth.middleware';
 import { corsOptions } from './configuration/cors.config';
 import { ReqLoggerMiddleware } from './middleware/req-logger.middleware';
-import { UserController } from './features/user/user.controller';
-import { UserService } from './features/user/user.service';
-import { AuthService } from './features/auth/auth.service';
-import { AuthController } from './features/auth/auth.controller';
 import { ReqIdMiddleware } from './middleware/req-id.middleware';
 import { LoggerService } from './features/logger.service';
 import { json, urlencoded } from 'express';
 import { EnvService } from './features/env.service';
 import cors from 'cors';
+import { ControllerModule } from './modules/controllers';
+import { MiddlewareModule } from './modules/middlewares';
+import { ProviderModule } from './modules/providers';
 
 const bootstrap = () => {
   const app = ApplicationFactory.run({
-    controllers: [UserController, AuthController],
-    middlewares: [ZodValidation, AuthMiddleware, ReqLoggerMiddleware, ReqIdMiddleware],
-    providers: [PrismaService, JwtService, EnvService, LoggerService, UserService, AuthService],
+    controllers: ControllerModule,
+    middlewares: MiddlewareModule,
+    providers: ProviderModule,
   });
 
   // Get providers instance
