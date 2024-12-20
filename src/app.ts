@@ -1,30 +1,28 @@
-import "reflect-metadata";
-import { ApplicationFactory } from "./core/application.factory";
-import { PrismaService } from "./features/prisma.service";
-import { ZodValidation } from "./middleware/zod.middleware";
-import { ErrorHandler } from "./middleware/exception.middleware";
-import { UserModule } from "./features/user/user.module";
-import { AuthModule } from "./features/auth/auth.module";
-import { JwtService } from "./features/jwt/jwt.service";
-import { AuthMiddleware } from "./features/auth/auth.middleware";
-import { TestModule } from "./features/test/test.module";
-import { corsOptions } from "./configuration/cors.config";
-import { ReqLoggerMiddleware } from "./middleware/req-logger.middleware";
-import cors from "cors";
+import 'reflect-metadata';
+import { ApplicationFactory } from './core/application.factory';
+import { PrismaService } from './features/prisma.service';
+import { ZodValidation } from './middleware/zod.middleware';
+import { ExceptionHandler } from './middleware/exception.middleware';
+import { JwtService } from './features/jwt/jwt.service';
+import { AuthMiddleware } from './features/auth/auth.middleware';
+import { corsOptions } from './configuration/cors.config';
+import { ReqLoggerMiddleware } from './middleware/req-logger.middleware';
+import cors from 'cors';
+import { UserController } from './features/user/user.controller';
+import { UserService } from './features/user/user.service';
+import { AuthService } from './features/auth/auth.service';
+import { AuthController } from './features/auth/auth.controller';
 
-const bootstrap = () =>
-  ApplicationFactory.run(
-    {
-      modules: [UserModule, AuthModule, TestModule],
-      middlewares: [ZodValidation, AuthMiddleware, ReqLoggerMiddleware],
-      providers: [PrismaService, JwtService],
-    },
-    (app) => {
-      app.setGlobalExceptionHandler(ErrorHandler);
-      app.use(cors(corsOptions));
-      const loggerMiddleware = app.get(ReqLoggerMiddleware);
-      app.use(loggerMiddleware.use);
-    }
-  );
+const bootstrap = () => {
+  const app = ApplicationFactory.run({
+    controllers: [UserController, AuthController],
+    middlewares: [ZodValidation, AuthMiddleware, ReqLoggerMiddleware],
+    providers: [PrismaService, JwtService, UserService, AuthService],
+  });
+  app.setGlobalExceptionHandler(ExceptionHandler);
+  app.use(cors(corsOptions));
+  app.use(ReqLoggerMiddleware);
+  app.start(8000, () => console.log('INIT'));
+};
 
 bootstrap();

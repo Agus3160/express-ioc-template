@@ -1,50 +1,30 @@
-import { asClass, AwilixContainer, createContainer } from "awilix";
-import { ApplicationRegisterDepenedncies, Constructor, FeatureModule } from "../lib/types";
-import { MetadataKeys } from "../decorators/metadata-keys";
-import { toCamelCase } from "../lib/util";
+import { Constructor } from "../lib/types";
+import { Container as InversifyContainer } from "inversify";
 
 export class Container {
-  private readonly container: AwilixContainer;
+  private readonly container: InversifyContainer;
 
   constructor() {
-    this.container = createContainer({ injectionMode: "CLASSIC" });
+    this.container = new InversifyContainer();
   }
 
-  getContainer(): AwilixContainer {
+  getContainer(): InversifyContainer {
     return this.container;
   }
 
-  resolve<T=any>(name: string): T {
-    const parsedName = toCamelCase(name);
-    return this.container.resolve(parsedName);
+  resolve<T=any>(Dependency: Constructor<T>): T {
+    return this.container.resolve(Dependency);
   }
 
-  loadAppDependencies(module:ApplicationRegisterDepenedncies){
-    if(module.middlewares) this.registerMany(module.middlewares);
-    if(module.providers) this.registerMany(module.providers);
-    if(module.modules) this.loadModule(module.modules);
-  }
-
-  loadModule(modules:Constructor<any>[]) {
-    for(const module of modules) {
-      const feature:FeatureModule|undefined = Reflect.getMetadata(MetadataKeys.MODULE, module);
-      if(feature) {
-        this.registerMany(feature.controllers);
-        this.registerMany(feature.services);
-      }
+  registerMany(Dependencies: Constructor<any>[]):void{
+    for(const Dependency of Dependencies) {
+      this.register(Dependency);
     }
   }
 
-  registerMany(dependencies: Constructor<any>[]):void{
-    for(const dependency of dependencies) {
-      const name = dependency.name;
-      this.register(name, dependency);
-    }
-  }
-
-  register<T>(name: string, value: Constructor<T>): void {
-    const parsedName = toCamelCase(name);
-    this.container.register(parsedName, asClass(value, {lifetime:"SINGLETON"}));
+  register<T>(Dependency: Constructor<T>): void {
+    if(this.container.isBound(Dependency)) return;
+    this.container.bind(Dependency.name).to(Dependency).inSingletonScope();
   }
 
 }

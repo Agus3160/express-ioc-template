@@ -1,13 +1,15 @@
 import { Exception } from "../../core/exception";
+import { Inject, Injectable } from "../../decorators/di.decorator";
 import { JwtService } from "../jwt/jwt.service";
 import { PrismaService } from "../prisma.service";
 import { SignIn, SignUp } from "./auth.types";
 import * as bcrypt from "bcrypt";
 
+@Injectable()
 export class AuthService {
   constructor(
-    private readonly prismaService: PrismaService,
-    private readonly jwtService: JwtService,
+    @Inject(PrismaService) private readonly prismaService: PrismaService,
+    @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
   async signup(data: SignUp): Promise<void> {

@@ -21,10 +21,10 @@ export type FeatureModule = {
   services: Constructor<any>[];
 };
 
-export type ApplicationRegisterDepenedncies = {
-  providers?: Constructor<any>[];
-  middlewares?: Constructor<any>[];
-  modules: Constructor<any>[];
+export type AppFactoryParams = {
+  providers: Constructor<any>[];
+  middlewares: Constructor<any>[];
+  controllers: Constructor<any>[];
 };
 
 export type Ctx = {
@@ -65,3 +65,13 @@ export type BaseModel = {
   updatedAt: Date;
   deletedAt: Date | null;
 };
+
+export const REQUEST_ID_HEADER = "x-req-id" as const;
+
+export type GetMiddlewareParams =
+  | { scope: "controller"; controller: Constructor<any> }
+  | {
+      scope: "handler";
+      controller: Constructor<any>;
+      propertyKey: string | symbol;
+    };

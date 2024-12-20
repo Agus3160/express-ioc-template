@@ -1,0 +1,9 @@
+{
+    "name":"nodemon",
+    "colours":true,
+    "watch": ["src/**/*.ts", ".env"],
+    "ignore": ["src/**/*.spec.ts"],
+    "execMap": {
+        "ts": "ts-node"
+    }
+}

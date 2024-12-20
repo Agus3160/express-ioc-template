@@ -2,7 +2,9 @@ import { Request } from "express";
 import { EnvService } from "../env.service";
 import { JwtPayload, Payload } from "./jwt.types";
 import jwt from "jsonwebtoken";
+import { Injectable } from "../../decorators/di.decorator";
 
+@Injectable()
 export class JwtService {
 
   genToken(payload:Payload) {

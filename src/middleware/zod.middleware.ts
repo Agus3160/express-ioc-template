@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
-import { IMiddleware } from "../core/interfaces";
-import { MetadataKeys } from "../decorators/metadata-keys";
-import { ZodValidationConfig } from "../lib/types";
-import { ZodError } from "zod";
-import { Exception } from "../core/exception";
+import { Request, Response } from 'express';
+import { IMiddleware } from '../core/interfaces';
+import { MetadataKeys } from '../decorators/metadata-keys';
+import { ZodValidationConfig } from '../lib/types';
+import { ZodError } from 'zod';
+import { Exception } from '../core/exception';
 
 export class ZodValidation implements IMiddleware {
   use(req: Request, _res: Response, next: Function): void | Promise<void> {
@@ -31,9 +31,9 @@ export class ZodValidation implements IMiddleware {
     } catch (err) {
       if (err instanceof ZodError) {
         const errors = err.issues.map(
-          (issue) => issue.path + ": " + issue.message
+          (issue) => issue.path + ': ' + issue.message
         );
-        return next(new Exception("Bad Request", 400, errors));
+        return next(new Exception('Bad Request', 400, errors));
       }
       next(err);
     }
