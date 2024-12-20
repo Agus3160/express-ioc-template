@@ -1,8 +1,8 @@
 import { format, LoggerOptions, transports } from "winston";
-import { EnvService } from "../features/env.service";
+import { envValues } from "./env.config";
 
 export const loggerOptions: LoggerOptions = {
-  level: EnvService.get("LOGGER_LEVEL"),
+  level: envValues.LOGGER_LEVEL,
   transports: [
     new transports.Console({
       format: format.combine(

@@ -2,9 +2,7 @@ import { RouteManager } from './route.manager';
 import express, {
   ErrorRequestHandler,
   Application as Express,
-  json,
   RequestHandler,
-  urlencoded,
 } from 'express';
 import { Container } from './container';
 import { Constructor } from '../lib/types';
@@ -49,12 +47,6 @@ export class Application {
   }
 
   public start(port: number, callback?: () => void): void {
-    // Config
-    this.express.use(json());
-    this.express.use(urlencoded({ extended: true }));
-
-    // Request ID
-
     // Custom Handlers
     for (const handler of this.reqHandlers) {
       this.express.use(handler);

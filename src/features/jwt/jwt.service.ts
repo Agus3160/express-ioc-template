@@ -2,19 +2,23 @@ import { Request } from "express";
 import { EnvService } from "../env.service";
 import { JwtPayload, Payload } from "./jwt.types";
 import jwt from "jsonwebtoken";
-import { Injectable } from "../../decorators/di.decorator";
+import { Inject, Injectable } from "../../decorators/di.decorator";
 
 @Injectable()
 export class JwtService {
 
+  constructor(
+    @Inject(EnvService) private readonly env:EnvService,
+  ){}
+
   genToken(payload:Payload) {
-    const expiresIn = EnvService.get("JWT_EXPIRATION_TIME");
-    const secret = EnvService.get("JWT_SECRET");
+    const expiresIn = this.env.get("JWT_EXPIRATION_TIME");
+    const secret = this.env.get("JWT_SECRET");
     return jwt.sign(payload, secret, { expiresIn });
   } 
 
   verifyToken(token:string) {
-    const secret = EnvService.get("JWT_SECRET");
+    const secret = this.env.get("JWT_SECRET");
     return jwt.verify(token, secret) as JwtPayload;
   }
 

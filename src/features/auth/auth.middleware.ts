@@ -30,6 +30,11 @@ export class AuthMiddleware implements IMiddleware {
 
 @Injectable()
 export class RoleMiddleware implements IMiddleware {
+
+  constructor(
+    @Inject(LoggerService) private readonly logger: LoggerService,
+  ) {}
+
   async use(req: Request, _res: Response, next: Function): Promise<void> {
     const roles = this.getRolesFromMetadata(req);
     if (roles.length === 0) return next();
@@ -53,7 +58,7 @@ export class RoleMiddleware implements IMiddleware {
         ctx.handler
       ) || [];
     if (methodsRoles.length === 0 && controllerRoles.length === 0) {
-      LoggerService.warn('No roles found in metadata');
+      this.logger.warn('No roles found in metadata');
       return [];
     }
     return controllerRoles.length > 0 ? controllerRoles : methodsRoles;

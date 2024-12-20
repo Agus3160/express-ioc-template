@@ -13,7 +13,8 @@ export class RouteManager {
 
   constructor(
     @Inject(HandlerManager) private readonly handlerUtil: HandlerManager,
-    @Inject(UtilService) private readonly util: UtilService
+    @Inject(UtilService) private readonly util: UtilService,
+    @Inject(LoggerService) private readonly logger:LoggerService
   ) {}
 
   public loadControllers(...controllers: Constructor<any>[]) {
@@ -30,7 +31,7 @@ export class RouteManager {
       );
       this.configPaths(router, controller, container);
       app.use(prefix, ...middlewares, router, ...interceptors);
-      LoggerService.info(`ROUTE [ ${prefix} ] LOADED SUCCESSFULLY!`);
+      this.logger.info(`ROUTE [ ${prefix} ] LOADED SUCCESSFULLY!`);
     }
   }
 
@@ -59,7 +60,7 @@ export class RouteManager {
           handler,
           ...interceptors
         );
-        LoggerService.debug(`PATH [ ${method.toUpperCase()} ${path} ] LOADED!`);
+        this.logger.debug(`PATH [ ${method.toUpperCase()} ${path} ] LOADED!`);
       }
     }
   }

@@ -1,22 +1,24 @@
-import { createLogger } from "winston";
-import { loggerOptions } from "../configuration/logger.options";
+import { createLogger } from 'winston';
+import { loggerOptions } from '../configuration/logger.options';
+import { Injectable } from '../decorators/di.decorator';
 
+@Injectable()
 export class LoggerService {
-  private static logger = createLogger(loggerOptions);
+  private logger = createLogger(loggerOptions);
 
-  public static info(message?: any, ...optionalParams: any[]): void {
+  public info(message?: any, ...optionalParams: any[]): void {
     this.logger.info(message, ...optionalParams);
   }
 
-  public static error(message?: any, ...optionalParams: any[]): void {
+  public error(message?: any, ...optionalParams: any[]): void {
     this.logger.error(message, ...optionalParams);
   }
 
-  public static warn(message?: any, ...optionalParams: any[]): void {
+  public warn(message?: any, ...optionalParams: any[]): void {
     this.logger.warn(message, ...optionalParams);
   }
 
-  public static debug(message?: any, ...optionalParams: any[]): void {
+  public debug(message?: any, ...optionalParams: any[]): void {
     this.logger.debug(message, ...optionalParams);
   }
 }
